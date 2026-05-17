@@ -358,6 +358,56 @@
     font-weight: 600;
   }
   .sheet-num::before, .sheet-num::after { content: '—'; opacity: 0.5; margin: 0 4px; }
+  .sheet-image-wrap {
+    margin: 4px -24px 18px;
+    background: var(--bg-warm);
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sheet-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .sheet-image.loaded { opacity: 1; }
+  .sheet-image-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+  .sheet-image-placeholder.gone { opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .sheet-image-credit {
+    position: absolute;
+    bottom: 6px; right: 8px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    letter-spacing: 0.05em;
+  }
+  /* Marker thumbnail preview on map */
+  .marker-thumb {
+    cursor: pointer;
+  }
+  .marker-thumb-bg {
+    fill: var(--paper);
+    stroke: var(--accent);
+    stroke-width: 1.5;
+  }
   .sheet-title-en {
     font-family: 'Cormorant Garamond', serif;
     font-size: 28px;
@@ -547,7 +597,7 @@
 const EXHIBITS = [
   // ─── FIRST FLOOR ───
   {
-    id: 1, floor: 1, x: 168, y: 68, gallery: '131',
+    id: 1, floor: 1, x: 168, y: 68, gallery: '131', metId: 547802,
     titleEn: 'The Temple of Dendur',
     titleZh: '丹铎神庙',
     artist: 'Roman Period · Egypt', artistZh: '罗马时期 · 古埃及',
@@ -557,7 +607,7 @@ const EXHIBITS = [
     view: '神庙被安置在一个朝向中央公园的玻璃幕墙大厅中，前方仿造尼罗河岸的水池。早上 10–11 点光线最佳，斜射的自然光会复现尼罗河谷的氛围。注意大门两侧的浮雕：奥古斯都被表现为法老形象，向埃及神祇献祭——这是罗马人统治埃及后的政治姿态。绕到神庙背面，可以看到拿破仑远征军留下的涂鸦签名（"L. Vidal" 等）。'
   },
   {
-    id: 2, floor: 1, x: 198, y: 92, gallery: '138',
+    id: 2, floor: 1, x: 198, y: 92, gallery: '138', metId: 544689,
     titleEn: 'Hatshepsut Statues',
     titleZh: '哈特谢普苏特女王雕像群',
     artist: 'New Kingdom, Dynasty 18', artistZh: '新王国 · 第十八王朝',
@@ -567,7 +617,7 @@ const EXHIBITS = [
     view: '注意女王的脸部——尽管被刻意以男性法老形象表现（戴 nemes 头巾、假胡须），但脸型、下颌的柔和线条仍透露出女性特征。看跪坐祭祀像，她以谦卑姿态向神献祭，但比例之恢宏（接近真人两倍）又传达统治者的威严——这种"既谦卑又神圣"是埃及王权艺术的核心矛盾。雕像表面可见后人凿刻的痕迹，是政治抹除的物证。'
   },
   {
-    id: 3, floor: 1, x: 232, y: 138, gallery: '154',
+    id: 3, floor: 1, x: 232, y: 138, gallery: '154', metId: 253370,
     titleEn: 'Marble statue of a kouros (youth)',
     titleZh: '青年立像（库罗斯）',
     artist: 'Greek, Attic', artistZh: '古希腊 · 阿提卡',
@@ -577,7 +627,7 @@ const EXHIBITS = [
     view: '从侧面看，注意他僵硬挺立的姿势——和埃及雕像几乎一致。再绕到正面看脸部："古风的微笑"是希腊早期雕塑的标志，那不是真在微笑，而是雕刻家不知如何处理嘴部，便以此程式让脸"有生气"。一百年后，到了古典时期，希腊雕塑将彻底突破这种僵硬（参见后面的展品）。'
   },
   {
-    id: 4, floor: 1, x: 262, y: 162, gallery: '162',
+    id: 4, floor: 1, x: 262, y: 162, gallery: '162', metId: 247017,
     titleEn: 'The Hellenistic Court & The Cubiculum from Boscoreale',
     titleZh: '博斯科雷亚莱卧室壁画',
     artist: 'Roman, Late Republic', artistZh: '古罗马 · 共和末期',
@@ -587,7 +637,7 @@ const EXHIBITS = [
     view: '走进这间复原的房间，站在中央——壁画的透视会"包裹"住你。仔细看远景里的鸟、神龛、葡萄藤——它们用线性透视和空气透视营造纵深感，比文艺复兴早了 1500 年。这是西方"幻觉主义绘画"的源头。注意墙面下方的紫色仿大理石护墙板——罗马人通过这种廉价手段模仿奢华装饰。'
   },
   {
-    id: 5, floor: 1, x: 92, y: 138, gallery: '371',
+    id: 5, floor: 1, x: 92, y: 138, gallery: '371', metId: 22188,
     titleEn: 'Equestrian Armor of the Bloomberg Court',
     titleZh: '骑士列阵 · 武器盔甲庭院',
     artist: 'European Royal Workshops', artistZh: '欧洲皇家工坊',
@@ -597,7 +647,7 @@ const EXHIBITS = [
     view: '请绕骑士一圈细看：盔甲不只是防护，更是身份的舞台。看头盔上的"獠牙"装饰、肩甲的浮雕、马铠上的纹章——每一道蚀刻都耗费工匠数百小时。试着估算重量：一套完整盔甲约 25–30 公斤，比想象中轻，因为骑士需要灵活作战。注意墙上的礼仪剑、长矛——它们的装饰程度往往比实战武器更繁复。'
   },
   {
-    id: 6, floor: 1, x: 58, y: 92, gallery: '700',
+    id: 6, floor: 1, x: 58, y: 92, gallery: '700', metId: 11417,
     titleEn: 'Washington Crossing the Delaware',
     titleZh: '华盛顿横渡特拉华河',
     artist: 'Emanuel Leutze', artistZh: '伊曼纽尔·洛伊茨',
@@ -607,7 +657,7 @@ const EXHIBITS = [
     view: '退到展厅另一端，先看整体——光线从画面左上方倾泻，照亮华盛顿的脸和飘扬的星条旗，造出近乎宗教画的崇高感。再走近：船上人物来自不同族裔（黑人、印第安人、苏格兰人），暗示"美利坚"是多元联盟。注意华盛顿身后那位握旗者——他原是德国船工，但被赋予了象征意义。冰块尖锐的笔触和水面的反光是绝活。'
   },
   {
-    id: 7, floor: 1, x: 30, y: 130, gallery: '746',
+    id: 7, floor: 1, x: 30, y: 130, gallery: '746', metId: 4885,
     titleEn: 'The Frank Lloyd Wright Room',
     titleZh: '弗兰克·劳埃德·赖特室内（小屋客厅）',
     artist: 'Frank Lloyd Wright', artistZh: '弗兰克·劳埃德·赖特',
@@ -619,7 +669,7 @@ const EXHIBITS = [
 
   // ─── SECOND FLOOR ───
   {
-    id: 8, floor: 2, x: 178, y: 50, gallery: '964',
+    id: 8, floor: 2, x: 178, y: 50, gallery: '964', metId: 436667,
     titleEn: 'Madonna and Child Enthroned with Saints',
     titleZh: '宝座上的圣母子与圣徒',
     artist: 'Raphael', artistZh: '拉斐尔',
@@ -629,7 +679,7 @@ const EXHIBITS = [
     view: '退两步看构图——圣母子位于金字塔顶点，四圣徒在底边对称分布，背后金色背景仍是中世纪传统。再走近看圣母的脸——拉斐尔标志性的"温柔椭圆"，眼睑微垂。看圣婴向圣约翰伸出的手——动作打破了对称的肃穆。注意衣袍褶皱的处理：清晰、稳定，没有达芬奇式的扭转——这是拉斐尔的"sprezzatura"：看似毫不费力的优雅。'
   },
   {
-    id: 9, floor: 2, x: 198, y: 50, gallery: '964',
+    id: 9, floor: 2, x: 198, y: 50, gallery: '964', metId: 435809,
     titleEn: 'The Harvesters',
     titleZh: '收割者',
     artist: 'Pieter Bruegel the Elder', artistZh: '老彼得·勃鲁盖尔',
@@ -639,7 +689,7 @@ const EXHIBITS = [
     view: '先站远——你会看见一片金黄麦田从右下汹涌涌向左上，远景延伸到大海。再走近：左下角树下，一群农民正在大口吃面包、喝啤酒、睡午觉——其中一人张大嘴打鼾。勃鲁盖尔对农民既不浪漫化也不嘲笑，他像一位人类学家。注意远景细节：游泳的人、运谷车、教堂尖塔——画面充满"小事件"，可以看 20 分钟不重复。'
   },
   {
-    id: 10, floor: 2, x: 220, y: 60, gallery: '637',
+    id: 10, floor: 2, x: 220, y: 60, gallery: '637', metId: 436575,
     titleEn: 'View of Toledo',
     titleZh: '托莱多风景',
     artist: 'El Greco', artistZh: '埃尔·格列柯',
@@ -649,7 +699,7 @@ const EXHIBITS = [
     view: '让眼睛先适应那片墨绿黑天——它压向画面下方的城市，几乎要吞噬一切。注意闪电般的白光——格列柯用一种叫"明暗剧化"（chiaroscuro）的手法把光当作戏剧元素。再看构图：所有线条向上倾斜、扭曲，画家用画笔传递焦虑、神秘、神圣感。这件作品在他生前不被欣赏，三百年后才被现代主义者重新发现。'
   },
   {
-    id: 11, floor: 2, x: 222, y: 86, gallery: '614',
+    id: 11, floor: 2, x: 222, y: 86, gallery: '614', metId: 437877,
     titleEn: 'Young Woman with a Water Pitcher',
     titleZh: '持水罐的少妇',
     artist: 'Johannes Vermeer', artistZh: '约翰内斯·维米尔',
@@ -659,7 +709,7 @@ const EXHIBITS = [
     view: '请安静地站在画前一分钟——这件作品需要耐心。看窗玻璃上的光、铜罐上的反光、白色头巾上柔和的阴影——维米尔以接近物理学的精度记录光线在不同材质上的行为。注意她头巾的白其实由多种颜色构成（粉、灰、淡黄）。她正在做什么？打开窗？整理桌布？不重要——重要的是这一刻被永远凝固。'
   },
   {
-    id: 12, floor: 2, x: 222, y: 100, gallery: '616',
+    id: 12, floor: 2, x: 222, y: 100, gallery: '616', metId: 437394,
     titleEn: 'Aristotle with a Bust of Homer',
     titleZh: '亚里士多德凝视荷马半身像',
     artist: 'Rembrandt van Rijn', artistZh: '伦勃朗·凡·莱因',
@@ -669,7 +719,7 @@ const EXHIBITS = [
     view: '请走近看光——伦勃朗的"明暗法"（chiaroscuro）在这件作品里达到极致：金色长袍上跳动着厚涂的笔触，与背景的深褐形成戏剧反差。再看亚里士多德的眼睛——那是全画最暗的地方，但你能感到他在凝视荷马。这种"哀伤的智慧"是伦勃朗晚期作品的核心情感。袖口、金链的厚涂（impasto）几乎是雕塑感的。'
   },
   {
-    id: 13, floor: 2, x: 222, y: 116, gallery: '630',
+    id: 13, floor: 2, x: 222, y: 116, gallery: '630', metId: 436105,
     titleEn: 'The Death of Socrates',
     titleZh: '苏格拉底之死',
     artist: 'Jacques-Louis David', artistZh: '雅克-路易·大卫',
@@ -679,7 +729,7 @@ const EXHIBITS = [
     view: '看构图：苏格拉底位于画面几何中心，左手指向天（灵魂的领域），右手伸向毒酒——这是经典的"修辞性手势"。学生们各异的反应组成一道情绪光谱：捂面痛哭、压抑悲恸、转身离去。柏拉图（年轻时其实并未在场）坐在床尾，垂头深思——大卫故意把他画得苍老，作为后世记录者的化身。墙上的灯火、阴影都为这场"思想剧场"服务。'
   },
   {
-    id: 14, floor: 2, x: 240, y: 132, gallery: '822',
+    id: 14, floor: 2, x: 240, y: 132, gallery: '822', metId: 437409,
     titleEn: 'Bridge over a Pond of Water Lilies',
     titleZh: '睡莲池上的桥',
     artist: 'Claude Monet', artistZh: '克劳德·莫奈',
@@ -689,7 +739,7 @@ const EXHIBITS = [
     view: '退到合适距离，眯起眼——画面会变成"光的颤动"。再走近，你会看到笔触本身——短促、并置、各自带色，由观者的眼睛在脑中调和。这就是印象派的方法论："不画物，画看到物的瞬间"。注意桥下水面：他没用一笔黑色画阴影，所有暗部都由纯色（紫、深蓝、绿）构成。这是莫奈对"光是一切"的信仰。'
   },
   {
-    id: 15, floor: 2, x: 240, y: 146, gallery: '822',
+    id: 15, floor: 2, x: 240, y: 146, gallery: '822', metId: 436535,
     titleEn: 'Wheat Field with Cypresses',
     titleZh: '麦田与丝柏',
     artist: 'Vincent van Gogh', artistZh: '文森特·梵高',
@@ -699,7 +749,7 @@ const EXHIBITS = [
     view: '近看笔触：梵高厚涂的颜料像浮雕——每一笔短促、有方向、形成漩涡，让画面整体在"扭动"。看天空：云朵不是云，是一条条扭曲的旋律线。再看丝柏树——那不是树，是垂直的火焰，是他对死亡和永恒的隐喻。最后退远，整个画面会重新平静下来——你看到的不是一片麦田，是一颗灵魂正在燃烧的自画像。'
   },
   {
-    id: 16, floor: 2, x: 250, y: 162, gallery: '825',
+    id: 16, floor: 2, x: 250, y: 162, gallery: '825', metId: 436532,
     titleEn: 'Self-Portrait with a Straw Hat',
     titleZh: '戴草帽的自画像',
     artist: 'Vincent van Gogh', artistZh: '文森特·梵高',
@@ -709,7 +759,7 @@ const EXHIBITS = [
     view: '看眼睛——这是梵高所有自画像的核心。他几乎从不画微笑，目光直视、警觉、孤独。再看背景：纯色的短笔触并置成振动的平面，把"环境"也变成情绪。和左侧晚期的《麦田与丝柏》对比——同一个人，两年之差，从"探索"到"决绝"。'
   },
   {
-    id: 17, floor: 2, x: 268, y: 168, gallery: '826',
+    id: 17, floor: 2, x: 268, y: 168, gallery: '826', metId: 438817,
     titleEn: 'The Dance Class',
     titleZh: '舞蹈课',
     artist: 'Edgar Degas', artistZh: '埃德加·德加',
@@ -721,7 +771,7 @@ const EXHIBITS = [
 
   // ─── ASIAN ART (2F) ───
   {
-    id: 18, floor: 2, x: 110, y: 76, gallery: '217',
+    id: 18, floor: 2, x: 110, y: 76, gallery: '217', metId: 76665,
     titleEn: 'The Astor Chinese Garden Court',
     titleZh: '明轩 · 阿斯特庭院',
     artist: 'Ming Dynasty style', artistZh: '明代风格',
@@ -731,7 +781,7 @@ const EXHIBITS = [
     view: '请放轻脚步。这是 Met 中最安静的角落之一——倾听水声、感受光线如何从天井倾泻。注意"借景"原理：透过漏窗看到的不是另一个房间，而是一幅幅"框景"。坐在敞厅的明式硬木家具前，看屋顶的木结构（无一根钉子）。园内陈列的家具均为博物馆收藏的明代真品。这是一处可以让你从希腊罗马疾走切换到东方静观的"换气孔"。'
   },
   {
-    id: 19, floor: 2, x: 110, y: 100, gallery: '208',
+    id: 19, floor: 2, x: 110, y: 100, gallery: '208', metId: 39901,
     titleEn: 'Travelers among Mountains and Streams',
     titleZh: '溪山行旅图（传范宽）',
     artist: 'After Fan Kuan', artistZh: '传北宋 · 范宽',
@@ -741,7 +791,7 @@ const EXHIBITS = [
     view: '中国山水画与西方风景画截然不同：不追求一时一地的写实，而是"可行可望可游可居"——观者的眼睛要顺着画面的"高远、深远、平远"游走，仿佛真的走入山中。请从下方看起：通常下方有溪流、行旅、小桥；中段是雾气，提示山的距离；顶端是主峰——往往要仰头才能完整看到。注意书法题跋和印章——它们是后世藏家的"对话"，是作品的一部分。'
   },
   {
-    id: 20, floor: 2, x: 138, y: 70, gallery: '253',
+    id: 20, floor: 2, x: 138, y: 70, gallery: '253', metId: 38183,
     titleEn: 'Standing Bodhisattva Avalokiteshvara (Padmapani)',
     titleZh: '观世音菩萨立像（莲华手）',
     artist: 'India, Pala period', artistZh: '印度 · 帕拉王朝',
@@ -960,6 +1010,8 @@ let state = {
   geoWatchId: null
 };
 
+const imgCache = {};  // metId -> URL (or null if no image found)
+
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
@@ -968,11 +1020,37 @@ function init() {
   renderFloors();
   renderMarkers();
   bindEvents();
+  prefetchImages();
 
   // Hide splash
   setTimeout(() => {
     $('#splash').classList.add('gone');
   }, 1400);
+}
+
+/* Prefetch image URLs from Met API in the background, so they're cached
+   by the time the user opens an exhibit. Errors silently ignored. */
+async function prefetchImages() {
+  const items = EXHIBITS.filter(ex => ex.metId);
+  // Stagger requests slightly to be polite to the API
+  for (let i = 0; i < items.length; i++) {
+    const ex = items[i];
+    if (imgCache[ex.metId] !== undefined) continue;
+    try {
+      const r = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${ex.metId}`);
+      if (r.ok) {
+        const data = await r.json();
+        imgCache[ex.metId] = data.primaryImageSmall || data.primaryImage || null;
+        // Preload into browser image cache too
+        if (imgCache[ex.metId]) {
+          const preload = new Image();
+          preload.src = imgCache[ex.metId];
+        }
+      }
+    } catch (e) { /* ignore */ }
+    // Small delay between calls
+    await new Promise(r => setTimeout(r, 80));
+  }
 }
 
 function renderFloorTabs() {
@@ -1068,6 +1146,11 @@ function openExhibit(id) {
   const nextId = idx < allIds.length - 1 ? allIds[idx + 1] : null;
 
   $('#sheetBody').innerHTML = `
+    <div class="sheet-image-wrap">
+      <div class="sheet-image-placeholder" id="imgPh-${ex.id}">载入图像 · loading</div>
+      <img class="sheet-image" id="img-${ex.id}" alt="${ex.titleEn}" />
+      <div class="sheet-image-credit">© The Met · CC0</div>
+    </div>
     <div class="sheet-num">No. ${String(ex.id).padStart(2, '0')} / 20</div>
     <h1 class="sheet-title-en">${ex.titleEn}</h1>
     <div class="sheet-title-zh">${ex.titleZh}</div>
@@ -1090,8 +1173,54 @@ function openExhibit(id) {
   document.getElementById('prevBtn')?.addEventListener('click', () => prevId && openExhibit(prevId));
   document.getElementById('nextBtn')?.addEventListener('click', () => nextId && openExhibit(nextId));
 
+  // Load image from Met API
+  loadMetImage(ex);
+
   $('#sheet').classList.add('open');
   $('#sheetOverlay').classList.add('open');
+}
+
+/* ─── Met API image loader ─── */
+
+async function loadMetImage(ex) {
+  if (!ex.metId) return;
+  const imgEl = document.getElementById(`img-${ex.id}`);
+  const phEl = document.getElementById(`imgPh-${ex.id}`);
+  if (!imgEl) return;
+
+  let url = imgCache[ex.metId];
+
+  if (url === undefined) {
+    // First time: fetch from Met API
+    try {
+      const r = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${ex.metId}`);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      // Prefer primaryImageSmall (faster), fall back to primaryImage
+      url = data.primaryImageSmall || data.primaryImage || null;
+      imgCache[ex.metId] = url;
+    } catch (e) {
+      console.warn('Met API error for', ex.metId, e);
+      imgCache[ex.metId] = null;
+      url = null;
+    }
+  }
+
+  // Verify the sheet is still showing this exhibit (user may have nav'd away)
+  if (state.currentExhibit !== ex.id) return;
+
+  if (url) {
+    imgEl.onload = () => {
+      imgEl.classList.add('loaded');
+      if (phEl) phEl.classList.add('gone');
+    };
+    imgEl.onerror = () => {
+      if (phEl) phEl.textContent = '图像暂不可用 · image unavailable';
+    };
+    imgEl.src = url;
+  } else {
+    if (phEl) phEl.textContent = '该展品暂无公开图像 · no public image';
+  }
 }
 
 function closeSheet() {
